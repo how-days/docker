@@ -1,0 +1,33 @@
+name: howdays-docker
+
+services:
+  app:
+    container_name: app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+  db:
+    container_name: db
+    image: postgres:17
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+volumes:
+  postgres-data:
+
+networks:
+  backend:
+    driver: bridge
